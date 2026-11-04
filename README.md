@@ -16,6 +16,8 @@ skillEletrohits/
 ├── sync.sh                     # Script para conectar as skills às IAs instaladas
 ├── README.md                   # Documentação
 └── skills/                     # Suas skills em Markdown universal
+    ├── security-audit/
+    │   └── SKILL.md            # Auditoria de segurança, confiança zero no client e RLS
     ├── payment-idempotency/
     │   └── SKILL.md            # Idempotência em webhooks e pagamentos (Stripe, etc.)
     ├── race-condition-audit/
