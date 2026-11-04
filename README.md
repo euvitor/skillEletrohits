@@ -1,3 +1,5 @@
+<img width="1672" height="941" alt="image" src="https://github.com/user-attachments/assets/9d8ff847-a562-4e13-adc0-6124c1e5fac6" />
+
 # 🪩⚡ skillEletrohits
 
 Biblioteca compartilhada de **Skills**, **Diretrizes** e **Procedimentos** para assistentes e agentes de IA, compatível com:
