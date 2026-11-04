@@ -35,6 +35,18 @@ done
 echo "🔗 Sincronizando biblioteca de skills..."
 echo "📂 Origem: $SOURCE_DIR/skills"
 
+# Função para limpar symlinks mortos/órfãos
+cleanup_broken_symlinks() {
+  local target_dir="$1"
+  if [ -d "$target_dir" ]; then
+    for link in "$target_dir"/*; do
+      if [ -L "$link" ] && [ ! -e "$link" ]; then
+        rm "$link"
+      fi
+    done
+  fi
+}
+
 # ------------------------------------------------------------------------------
 # 1. Modo Projeto Específico (quando passado --project <path>)
 # ------------------------------------------------------------------------------
@@ -53,6 +65,7 @@ if [ -n "$TARGET_PROJECT" ]; then
     skill_name=$(basename "$skill_dir")
     ln -sfn "$skill_dir" "$AGY_WS/$skill_name"
   done
+  cleanup_broken_symlinks "$AGY_WS"
   echo "  ✔ Antigravity (.agents/skills/) configurado."
 
   # Cursor Workspace (.cursor/rules)
@@ -64,6 +77,7 @@ if [ -n "$TARGET_PROJECT" ]; then
       ln -sfn "$skill_dir/SKILL.md" "$CURSOR_WS/$skill_name.mdc"
     fi
   done
+  cleanup_broken_symlinks "$CURSOR_WS"
   echo "  ✔ Cursor (.cursor/rules/) configurado."
 
   echo "🎉 Concluído com sucesso no projeto!"
@@ -81,6 +95,7 @@ for skill_dir in "$SOURCE_DIR"/skills/*/; do
   skill_name=$(basename "$skill_dir")
   ln -sfn "$skill_dir" "$AGY_GLOBAL/$skill_name"
 done
+cleanup_broken_symlinks "$AGY_GLOBAL"
 echo "  ✔ Antigravity Global ($AGY_GLOBAL) configurado."
 
 # Claude Code Global (~/.claude/skills/)
@@ -90,6 +105,7 @@ for skill_dir in "$SOURCE_DIR"/skills/*/; do
   skill_name=$(basename "$skill_dir")
   ln -sfn "$skill_dir" "$CLAUDE_GLOBAL/$skill_name"
 done
+cleanup_broken_symlinks "$CLAUDE_GLOBAL"
 echo "  ✔ Claude Code ($CLAUDE_GLOBAL) configurado."
 
 # Cursor Global (~/.cursor/rules/)
@@ -101,7 +117,15 @@ for skill_dir in "$SOURCE_DIR"/skills/*/; do
     ln -sfn "$skill_dir/SKILL.md" "$CURSOR_GLOBAL/$skill_name.mdc"
   fi
 done
+cleanup_broken_symlinks "$CURSOR_GLOBAL"
 echo "  ✔ Cursor Global ($CURSOR_GLOBAL) configurado."
 
+# ------------------------------------------------------------------------------
+# 3. Atualizar Catálogo Dinâmico no README.md
+# ------------------------------------------------------------------------------
+if [ -f "$SOURCE_DIR/scripts/update-catalog.py" ]; then
+  python3 "$SOURCE_DIR/scripts/update-catalog.py"
+fi
+
 echo ""
-echo "🎉 Pronto! Todas as skills foram vinculadas com sucesso às ferramentas de IA."
+echo "🎉 Pronto! Todas as skills foram vinculadas e o catálogo está atualizado."

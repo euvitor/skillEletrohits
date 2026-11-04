@@ -1,0 +1,41 @@
+name: Atualizar Catálogo de Skills no README
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'skills/**'
+      - 'scripts/update-catalog.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Executar Gerador do Catálogo
+        run: |
+          python3 scripts/update-catalog.py
+
+      - name: Commitar alterações no README (se houver)
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet README.md; then
+            git add README.md
+            git commit -m "docs: auto-update skills catalog in README [skip ci]"
+            git push
+          else
+            echo "Nenhuma alteração detectada no catálogo do README."
+          fi
