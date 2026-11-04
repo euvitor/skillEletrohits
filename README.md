@@ -1,4 +1,4 @@
-# 🧠 Universal AI Toolkit
+# 🪩⚡ skillEletrohits
 
 Biblioteca compartilhada de **Skills**, **Diretrizes** e **Procedimentos** para assistentes e agentes de IA, compatível com:
 - **Google Antigravity**
@@ -11,11 +11,13 @@ Biblioteca compartilhada de **Skills**, **Diretrizes** e **Procedimentos** para 
 ## 📁 Estrutura do Repositório
 
 ```text
-universal-ai-toolkit/
-├── plugin.json                 # Manifesto para o Antigravity
+skillEletrohits/
+├── plugin.json                 # Manifesto compatível com Antigravity
 ├── sync.sh                     # Script para conectar as skills às IAs instaladas
 ├── README.md                   # Documentação
 └── skills/                     # Suas skills em Markdown universal
+    ├── race-condition-audit/
+    │   └── SKILL.md            # Auditoria e correção de concorrência e race conditions
     ├── code-review/
     │   └── SKILL.md            # Padrões e checklist de revisão de código
     ├── git-workflow/
@@ -31,8 +33,8 @@ universal-ai-toolkit/
 ### 1. Clonar o Repositório
 Em qualquer nova máquina:
 ```bash
-git clone https://github.com/SEU_USUARIO/universal-ai-toolkit.git ~/universal-ai-toolkit
-cd ~/universal-ai-toolkit
+git clone git@github.com:euvitor/skillEletrohits.git ~/dev/skillEletrohits
+cd ~/dev/skillEletrohits
 ```
 
 ### 2. Sincronizar com as Ferramentas de IA
