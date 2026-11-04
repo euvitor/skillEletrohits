@@ -16,6 +16,8 @@ skillEletrohits/
 ├── sync.sh                     # Script para conectar as skills às IAs instaladas
 ├── README.md                   # Documentação
 └── skills/                     # Suas skills em Markdown universal
+    ├── ai-app-audit/
+    │   └── SKILL.md            # Diagnóstico completo (read-only) do app com relatório AUDITORIA.md
     ├── integration-testing/
     │   └── SKILL.md            # Testes de integração (request specs) com banco real
     ├── safe-refactoring/
