@@ -53,31 +53,11 @@ Se quiser ativar essas skills apenas dentro de um projeto/repositório de trabal
 ./sync.sh --project /caminho/do/seu-projeto
 ```
 
----
-
-## ✍️ Como Adicionar Novas Skills
-
-1. Crie uma nova pasta dentro de `skills/` (ex: `skills/minha-nova-skill/`).
-2. Crie um arquivo `SKILL.md` dentro dela com o cabeçalho YAML obrigatório:
-
-```markdown
----
-name: minha-nova-skill
-description: Descreva quando a IA deve ativar esta skill (em terceira pessoa).
----
-
-# Título da Skill
-
-Instruções claras e estruturadas para o agente de IA...
-```
-
-3. Suba as alterações para o GitHub:
+### 3. Como Manter Atualizado
+Sempre que novas skills forem adicionadas ao repositório:
 ```bash
-git add .
-git commit -m "feat: adiciona nova skill"
-git push
+cd ~/dev/skillEletrohits && git pull && ./sync.sh
 ```
-4. **Catálogo 100% Automático**: A GitHub Action do repositório (e o `./sync.sh` local) atualizará a tabela de skills do `README.md` automaticamente!
 
 ---
 
@@ -100,3 +80,18 @@ skillEletrohits/
     ├── safe-refactoring/       # Separação de monolitos em camadas limpas
     └── security-audit/         # Auditoria de segurança e Zero-Client Trust
 ```
+
+---
+
+## 🤝 Como Contribuir
+
+Quer sugerir uma nova skill ou melhorar uma existente? Contribuições da comunidade são muito bem-vindas!
+
+1. Faça um **Fork** deste repositório;
+2. Crie uma branch para a sua alteração (`git checkout -b feature/minha-nova-skill`);
+3. Crie a pasta em `skills/<nome-da-skill>/SKILL.md` seguindo o padrão de frontmatter YAML (`name` e `description`);
+4. Faça o commit das suas alterações (`git commit -m "feat(skills): add minha-nova-skill"`);
+5. Envie para o seu fork (`git push origin feature/minha-nova-skill`);
+6. Abra um **Pull Request**.
+
+> 💡 **Dica**: Não se preocupe em atualizar a tabela do `README.md` manualmente. A nossa **GitHub Action** cuida disso automaticamente assim que o seu Pull Request for aprovado e mesclado!
