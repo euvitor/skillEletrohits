@@ -18,6 +18,7 @@ Biblioteca compartilhada de **Skills**, **Diretrizes** e **Procedimentos** para 
 | 🪩 `ai-app-audit` | Use esta skill para realizar uma auditoria completa e 100% somente-leitura (read-only) em aplicações web construídas com IA, gerando o relatório AUDITORIA.md com diagnóstico de testes, segurança no cliente, race conditions, idempotência e arquitetura. | [`SKILL.md`](skills/ai-app-audit/SKILL.md) |
 | `integration-testing` | Use esta skill para cobrir fluxos críticos do app (cadastro, autenticação, checkout, webhooks, pagamentos e permissões) com testes de integração realistas (estilo request specs), utilizando banco de teste real e mockando apenas serviços externos. | [`SKILL.md`](skills/integration-testing/SKILL.md) |
 | `payment-idempotency` | Use esta skill para auditar, implementar e garantir idempotência em webhooks e endpoints de pagamento, cobrança, liberação de planos, créditos ou reembolsos (Stripe, Pagar.me, Asaas, Mercado Pago, etc.). | [`SKILL.md`](skills/payment-idempotency/SKILL.md) |
+| `premium-ux-craft` | Use esta skill ao auditar, projetar ou codificar interfaces e fluxos de usuário, garantindo acabamento premium, ergonomia cognitiva, matriz completa de estados (empty, loading, error), teatro do sistema e recuperação graciosa de falhas. | [`SKILL.md`](skills/premium-ux-craft/SKILL.md) |
 | `race-condition-audit` | Use esta skill para identificar, auditar, prevenir e corrigir race conditions (condições de corrida) em operações críticas como criação de pedidos, baixa de estoque, cupons, saldos, vagas, convites ou contadores. | [`SKILL.md`](skills/race-condition-audit/SKILL.md) |
 | `safe-refactoring` | Use esta skill quando o usuário pedir para refatorar, modularizar ou dividir arquivos grandes ou monolíticos ("God files", telas ou rotas gigantes) em camadas limpas, sem alterar o comportamento existente e com testes de caracterização. | [`SKILL.md`](skills/safe-refactoring/SKILL.md) |
 | `security-audit` | Use esta skill para realizar auditorias de segurança fullstack, identificando regras de negócio expostas no frontend (preço, descontos, permissões), vazamento de chaves e segredos em variáveis públicas (NEXT_PUBLIC_, VITE_), e brechas de Row Level Security (RLS) no Supabase ou bancos expostos por API. | [`SKILL.md`](skills/security-audit/SKILL.md) |
@@ -76,6 +77,7 @@ skillEletrohits/
     ├── ai-app-audit/           # Diagnóstico 100% read-only do app (Hub)
     ├── integration-testing/    # Request specs com banco de teste real
     ├── payment-idempotency/    # Idempotência em webhooks e pagamentos
+    ├── premium-ux-craft/       # Design premium, teatro do sistema e recuperação de falhas
     ├── race-condition-audit/   # Auditoria de concorrência e race conditions
     ├── safe-refactoring/       # Separação de monolitos em camadas limpas
     └── security-audit/         # Auditoria de segurança e Zero-Client Trust
