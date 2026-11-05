@@ -1,6 +1,6 @@
-<img width="1672" height="941" alt="image" src="https://github.com/user-attachments/assets/9d8ff847-a562-4e13-adc0-6124c1e5fac6" />
+<img width="2048" height="768" alt="image" src="https://github.com/user-attachments/assets/1aa16e57-7003-4204-ae93-9a0d914c210e" />
 
-# 🪩⚡ skillEletrohits
+# 🪩 skillEletrohits
 
 Biblioteca compartilhada de **Skills**, **Diretrizes** e **Procedimentos** para assistentes e agentes de IA, compatível com:
 - **Google Antigravity**
