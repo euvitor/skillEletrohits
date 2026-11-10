@@ -58,7 +58,7 @@ if [ -n "$TARGET_PROJECT" ]; then
 
   echo "🎯 Configurando para o projeto: $TARGET_PROJECT"
 
-  # Antigravity Workspace (.agents/skills)
+  # Antigravity & IntelliJ Workspace (.agents/skills)
   AGY_WS="$TARGET_PROJECT/.agents/skills"
   mkdir -p "$AGY_WS"
   for skill_dir in "$SOURCE_DIR"/skills/*/; do
@@ -66,7 +66,7 @@ if [ -n "$TARGET_PROJECT" ]; then
     ln -sfn "$skill_dir" "$AGY_WS/$skill_name"
   done
   cleanup_broken_symlinks "$AGY_WS"
-  echo "  ✔ Antigravity (.agents/skills/) configurado."
+  echo "  ✔ Antigravity & IntelliJ Workspace (.agents/skills/) configurado."
 
   # IntelliJ / JetBrains Junie Workspace (.junie/skills)
   INTELLIJ_WS="$TARGET_PROJECT/.junie/skills"
@@ -107,6 +107,43 @@ for skill_dir in "$SOURCE_DIR"/skills/*/; do
 done
 cleanup_broken_symlinks "$AGY_GLOBAL"
 echo "  ✔ Antigravity Global ($AGY_GLOBAL) configurado."
+
+# IntelliJ IDEA / JetBrains (Extensão Oficial Antigravity & AI Assistant)
+# Escaneia diretórios de cache do JetBrains no macOS e Linux
+shopt -s nullglob
+JB_DIRS=(
+  "$HOME/Library/Caches/JetBrains"/*/aia/agents
+  "$HOME/.cache/JetBrains"/*/aia/agents
+)
+shopt -u nullglob
+
+jb_configured=0
+for jb_agents in "${JB_DIRS[@]}"; do
+  if [ -d "$jb_agents" ]; then
+    ide_label=$(basename "$(dirname "$(dirname "$jb_agents")")")
+    
+    # 1. Managed Skills Root (Settings -> Tools -> AI Assistant -> Skills)
+    JB_MANAGED="$jb_agents/.agents/skills"
+    mkdir -p "$JB_MANAGED"
+    for skill_dir in "$SOURCE_DIR"/skills/*/; do
+      skill_name=$(basename "$skill_dir")
+      ln -sfn "$skill_dir" "$JB_MANAGED/$skill_name"
+    done
+    cleanup_broken_symlinks "$JB_MANAGED"
+
+    # 2. Views / Other Root (Injetado pelo IntelliJ no Antigravity ACP)
+    JB_VIEWS="$jb_agents/views/other/.agents/skills"
+    mkdir -p "$JB_VIEWS"
+    for skill_dir in "$SOURCE_DIR"/skills/*/; do
+      skill_name=$(basename "$skill_dir")
+      ln -sfn "$skill_dir" "$JB_VIEWS/$skill_name"
+    done
+    cleanup_broken_symlinks "$JB_VIEWS"
+
+    echo "  ✔ IntelliJ IDEA / JetBrains ($ide_label) configurado."
+    jb_configured=1
+  fi
+done
 
 # IntelliJ / JetBrains Junie Global (~/.junie/skills/)
 INTELLIJ_GLOBAL="$HOME/.junie/skills"

@@ -44,8 +44,9 @@ Basta executar o script de sincronização:
 ./sync.sh
 ```
 Isso criará links simbólicos (*symlinks*) apontando para este repositório em:
-- `~/.gemini/config/skills/` (Antigravity)
-- `~/.junie/skills/` (IntelliJ IDEA / JetBrains Junie)
+- `~/.gemini/config/skills/` (Antigravity Global)
+- `~/Library/Caches/JetBrains/*/aia/agents/` (IntelliJ IDEA / Extensão Oficial Antigravity & AI Assistant)
+- `~/.junie/skills/` (JetBrains Junie)
 - `~/.claude/skills/` (Claude Code)
 - `~/.cursor/rules/` (Cursor)
 - Além de regenerar automaticamente o catálogo deste `README.md`.
