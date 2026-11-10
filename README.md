@@ -4,6 +4,7 @@
 
 Biblioteca compartilhada de **Skills**, **Diretrizes** e **Procedimentos** para assistentes e agentes de IA, compatível com:
 - **Google Antigravity**
+- **IntelliJ IDEA / JetBrains** (Junie / AI Assistant)
 - **Claude Code**
 - **Cursor**
 - **Windsurf** / outros editores com suporte a regras em Markdown
@@ -44,6 +45,7 @@ Basta executar o script de sincronização:
 ```
 Isso criará links simbólicos (*symlinks*) apontando para este repositório em:
 - `~/.gemini/config/skills/` (Antigravity)
+- `~/.junie/skills/` (IntelliJ IDEA / JetBrains Junie)
 - `~/.claude/skills/` (Claude Code)
 - `~/.cursor/rules/` (Cursor)
 - Além de regenerar automaticamente o catálogo deste `README.md`.

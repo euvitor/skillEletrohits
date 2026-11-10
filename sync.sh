@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # sync.sh - Sincronizador de Skills Multi-IA
-# Vincula suas skills ao Antigravity, Claude Code, Cursor e outros editores.
+# Vincula suas skills ao Antigravity, Claude Code, Cursor, IntelliJ (Junie) e outros editores.
 # ==============================================================================
 
 set -e
@@ -20,8 +20,8 @@ while [[ $# -gt 0 ]]; do
       echo "Uso: ./sync.sh [OPÇÕES]"
       echo ""
       echo "Opções:"
-      echo "  (sem argumentos)      Sincroniza globalmente no usuário (~/.gemini, ~/.claude, ~/.cursor)"
-      echo "  --project, -p <PATH>  Sincroniza dentro do diretório de um projeto específico (.agents/skills, .cursor/rules)"
+      echo "  (sem argumentos)      Sincroniza globalmente no usuário (~/.gemini, ~/.claude, ~/.cursor, ~/.junie)"
+      echo "  --project, -p <PATH>  Sincroniza dentro do diretório de um projeto específico (.agents/skills, .junie/skills, .cursor/rules)"
       echo "  --help, -h            Exibe esta mensagem de ajuda"
       exit 0
       ;;
@@ -68,6 +68,16 @@ if [ -n "$TARGET_PROJECT" ]; then
   cleanup_broken_symlinks "$AGY_WS"
   echo "  ✔ Antigravity (.agents/skills/) configurado."
 
+  # IntelliJ / JetBrains Junie Workspace (.junie/skills)
+  INTELLIJ_WS="$TARGET_PROJECT/.junie/skills"
+  mkdir -p "$INTELLIJ_WS"
+  for skill_dir in "$SOURCE_DIR"/skills/*/; do
+    skill_name=$(basename "$skill_dir")
+    ln -sfn "$skill_dir" "$INTELLIJ_WS/$skill_name"
+  done
+  cleanup_broken_symlinks "$INTELLIJ_WS"
+  echo "  ✔ IntelliJ / JetBrains (.junie/skills/) configurado."
+
   # Cursor Workspace (.cursor/rules)
   CURSOR_WS="$TARGET_PROJECT/.cursor/rules"
   mkdir -p "$CURSOR_WS"
@@ -97,6 +107,16 @@ for skill_dir in "$SOURCE_DIR"/skills/*/; do
 done
 cleanup_broken_symlinks "$AGY_GLOBAL"
 echo "  ✔ Antigravity Global ($AGY_GLOBAL) configurado."
+
+# IntelliJ / JetBrains Junie Global (~/.junie/skills/)
+INTELLIJ_GLOBAL="$HOME/.junie/skills"
+mkdir -p "$INTELLIJ_GLOBAL"
+for skill_dir in "$SOURCE_DIR"/skills/*/; do
+  skill_name=$(basename "$skill_dir")
+  ln -sfn "$skill_dir" "$INTELLIJ_GLOBAL/$skill_name"
+done
+cleanup_broken_symlinks "$INTELLIJ_GLOBAL"
+echo "  ✔ IntelliJ / JetBrains Junie ($INTELLIJ_GLOBAL) configurado."
 
 # Claude Code Global (~/.claude/skills/)
 CLAUDE_GLOBAL="$HOME/.claude/skills"
