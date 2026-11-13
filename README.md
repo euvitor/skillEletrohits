@@ -4,6 +4,7 @@
 
 Biblioteca compartilhada de **Skills**, **Diretrizes** e **Procedimentos** para assistentes e agentes de IA, compatível com:
 - **Google Antigravity**
+- **Android Studio** (Gemini / Antigravity Agent)
 - **IntelliJ IDEA / JetBrains** (Junie / AI Assistant)
 - **Claude Code**
 - **Cursor**
@@ -46,7 +47,9 @@ Basta executar o script de sincronização:
 ```
 Isso criará links simbólicos (*symlinks*) apontando para este repositório em:
 - `~/.gemini/config/skills/` (Antigravity Global)
+- `~/.android-studio/skills/` (Android Studio Global)
 - `~/Library/Caches/JetBrains/*/aia/agents/` (IntelliJ IDEA / Extensão Oficial Antigravity & AI Assistant)
+- `~/.agents/skills/` (Padrão Global Multi-IDE)
 - `~/.junie/skills/` (JetBrains Junie)
 - `~/.claude/skills/` (Claude Code)
 - `~/.cursor/rules/` (Cursor)

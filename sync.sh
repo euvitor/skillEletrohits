@@ -58,7 +58,7 @@ if [ -n "$TARGET_PROJECT" ]; then
 
   echo "🎯 Configurando para o projeto: $TARGET_PROJECT"
 
-  # Antigravity & IntelliJ Workspace (.agents/skills)
+  # Antigravity, IntelliJ & Android Studio Workspace (.agents/skills)
   AGY_WS="$TARGET_PROJECT/.agents/skills"
   mkdir -p "$AGY_WS"
   for skill_dir in "$SOURCE_DIR"/skills/*/; do
@@ -66,7 +66,17 @@ if [ -n "$TARGET_PROJECT" ]; then
     ln -sfn "$skill_dir" "$AGY_WS/$skill_name"
   done
   cleanup_broken_symlinks "$AGY_WS"
-  echo "  ✔ Antigravity & IntelliJ Workspace (.agents/skills/) configurado."
+  echo "  ✔ Workspace (.agents/skills/) configurado."
+
+  # Android Studio Workspace (.android-studio/skills)
+  AS_WS="$TARGET_PROJECT/.android-studio/skills"
+  mkdir -p "$AS_WS"
+  for skill_dir in "$SOURCE_DIR"/skills/*/; do
+    skill_name=$(basename "$skill_dir")
+    ln -sfn "$skill_dir" "$AS_WS/$skill_name"
+  done
+  cleanup_broken_symlinks "$AS_WS"
+  echo "  ✔ Android Studio Workspace (.android-studio/skills/) configurado."
 
   # IntelliJ / JetBrains Junie Workspace (.junie/skills)
   INTELLIJ_WS="$TARGET_PROJECT/.junie/skills"
@@ -107,6 +117,26 @@ for skill_dir in "$SOURCE_DIR"/skills/*/; do
 done
 cleanup_broken_symlinks "$AGY_GLOBAL"
 echo "  ✔ Antigravity Global ($AGY_GLOBAL) configurado."
+
+# Android Studio Global (~/.android-studio/skills/)
+ANDROID_STUDIO_GLOBAL="$HOME/.android-studio/skills"
+mkdir -p "$ANDROID_STUDIO_GLOBAL"
+for skill_dir in "$SOURCE_DIR"/skills/*/; do
+  skill_name=$(basename "$skill_dir")
+  ln -sfn "$skill_dir" "$ANDROID_STUDIO_GLOBAL/$skill_name"
+done
+cleanup_broken_symlinks "$ANDROID_STUDIO_GLOBAL"
+echo "  ✔ Android Studio Global ($ANDROID_STUDIO_GLOBAL) configurado."
+
+# Padrão Global .agents (~/.agents/skills/)
+AGENTS_GLOBAL="$HOME/.agents/skills"
+mkdir -p "$AGENTS_GLOBAL"
+for skill_dir in "$SOURCE_DIR"/skills/*/; do
+  skill_name=$(basename "$skill_dir")
+  ln -sfn "$skill_dir" "$AGENTS_GLOBAL/$skill_name"
+done
+cleanup_broken_symlinks "$AGENTS_GLOBAL"
+echo "  ✔ Agentes Multi-IDE Global ($AGENTS_GLOBAL) configurado."
 
 # IntelliJ IDEA / JetBrains (Extensão Oficial Antigravity & AI Assistant)
 # Escaneia diretórios de cache do JetBrains no macOS e Linux
