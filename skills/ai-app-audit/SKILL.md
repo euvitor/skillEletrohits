@@ -1,6 +1,6 @@
 ---
 name: ai-app-audit
-description: Use esta skill para realizar uma auditoria completa e 100% somente-leitura (read-only) em aplicações web construídas com IA, gerando o relatório AUDITORIA.md com diagnóstico de testes, segurança no cliente, race conditions, idempotência e arquitetura.
+description: Use esta skill para realizar uma auditoria geral panorâmica e 100% somente-leitura (read-only) de toda a aplicação web construída com IA, gerando o relatório AUDITORIA.md com diagnóstico de testes, segurança no cliente, race conditions, idempotência e arquitetura.
 ---
 
 # Auditoria Completa de Aplicações Geradas por IA (Diagnostic Hub)
@@ -117,11 +117,13 @@ Gere um arquivo denominado `AUDITORIA.md` na raiz do projeto com o seguinte padr
 
 ## 🎯 Próximos Passos: Plano de Correção Recomendado
 Recomendação explícita de qual skill do repositório ativar primeiro e a justificativa técnica:
+- 📋 Para transformar os achados deste `AUDITORIA.md` em issues e milestones organizados no GitHub: execute a skill `github-project-planner`.
 - 🛡️ Se o maior risco for vazamento/RLS: execute a skill `security-audit`.
 - ⚡ Se o maior risco for inconsistência de estoque/saldo: execute a skill `race-condition-audit`.
 - 💳 Se o maior risco for cobranças/webhooks duplicados: execute a skill `payment-idempotency`.
 - 🧱 Se o maior risco for arquivo monolítico quebrando o app: execute a skill `safe-refactoring`.
 - 🧪 Se faltar validação dos fluxos vitais: execute a skill `integration-testing`.
+- ✨ Para elevar o acabamento visual, estados de erro e UX das telas críticas: execute a skill `premium-ux-craft`.
 ```
 
 > [!IMPORTANT]

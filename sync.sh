@@ -20,8 +20,8 @@ while [[ $# -gt 0 ]]; do
       echo "Uso: ./sync.sh [OPÇÕES]"
       echo ""
       echo "Opções:"
-      echo "  (sem argumentos)      Sincroniza globalmente no usuário (~/.gemini, ~/.claude, ~/.cursor, ~/.junie)"
-      echo "  --project, -p <PATH>  Sincroniza dentro do diretório de um projeto específico (.agents/skills, .junie/skills, .cursor/rules)"
+      echo "  (sem argumentos)      Sincroniza globalmente no usuário (~/.gemini, ~/.android-studio, ~/.agents, IntelliJ, ~/.junie, ~/.claude, ~/.cursor)"
+      echo "  --project, -p <PATH>  Sincroniza dentro do diretório de um projeto específico (.agents/skills, .android-studio/skills, .junie/skills, .cursor/rules)"
       echo "  --help, -h            Exibe esta mensagem de ajuda"
       exit 0
       ;;
