@@ -1,0 +1,30 @@
+name: Validar Skills (Pull Request)
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'skills/**'
+      - 'scripts/validate-skills.py'
+      - 'scripts/update-catalog.py'
+      - '.github/workflows/validate-skills.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Validar Estrutura e Frontmatter das Skills
+        run: python3 scripts/validate-skills.py
+
+      - name: Testar Gerador de Catálogo
+        run: python3 scripts/update-catalog.py
