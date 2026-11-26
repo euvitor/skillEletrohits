@@ -119,6 +119,7 @@ Gere um arquivo denominado `AUDITORIA.md` na raiz do projeto com o seguinte padr
 Recomendação explícita de qual skill do repositório ativar primeiro e a justificativa técnica:
 - 📋 Para transformar os achados deste `AUDITORIA.md` em issues e milestones organizados no GitHub: execute a skill `github-project-planner`.
 - 🛡️ Se o maior risco for vazamento/RLS: execute a skill `security-audit`.
+- 🧱 Se faltarem schemas de validação na API ou no consumo de APIs terceiras: execute a skill `input-validation-guard`.
 - ⚡ Se o maior risco for inconsistência de estoque/saldo: execute a skill `race-condition-audit`.
 - 💳 Se o maior risco for cobranças/webhooks duplicados: execute a skill `payment-idempotency`.
 - 🧱 Se o maior risco for arquivo monolítico quebrando o app: execute a skill `safe-refactoring`.

@@ -4,7 +4,7 @@
 # 🪩 skillEletrohits
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-8%20Especialistas-blueviolet.svg)](#-catálogo-de-skills)
+[![Skills](https://img.shields.io/badge/Skills-9%20Especialistas-blueviolet.svg)](#-catálogo-de-skills)
 [![Multi-IDE](https://img.shields.io/badge/Compatível-Antigravity%20%7C%20Android%20Studio%20%7C%20IntelliJ%20%7C%20Claude%20%7C%20Cursor-00ADD8.svg)](#-como-instalar-e-usar)
 
 Biblioteca aberta de **Skills** para transformar seu assistente de IA em um time de *Staff Engineers*, *AppSec* e *Product Designers* — evitando falhas clássicas de código gerado por IA (RLS aberto, *race conditions*, webhooks duplicados, *God files* e UI genérica).
@@ -18,8 +18,9 @@ Biblioteca aberta de **Skills** para transformar seu assistente de IA em um time
 <!-- AUTO_SKILLS_TABLE:START -->
 | Skill | Descrição | Arquivo |
 | :--- | :--- | :--- |
-| `ai-app-audit` | Use esta skill para realizar uma auditoria geral panorâmica e 100% somente-leitura (read-only) de toda a aplicação web construída com IA, gerando o relatório AUDITORIA.md com diagnóstico de testes, segurança no cliente, race conditions, idempotência e arquitetura. | [`SKILL.md`](skills/ai-app-audit/SKILL.md) |
+| 🪩 `ai-app-audit` | Use esta skill para realizar uma auditoria geral panorâmica e 100% somente-leitura (read-only) de toda a aplicação web construída com IA, gerando o relatório AUDITORIA.md com diagnóstico de testes, segurança no cliente, race conditions, idempotência e arquitetura. | [`SKILL.md`](skills/ai-app-audit/SKILL.md) |
 | `github-project-planner` | Atua como Tech Lead e Project Manager lean. Estrutura projetos no GitHub analisando issues e milestones existentes, organizando entregas em fatias verticais de alta densidade em português (prontas para humanos ou agentes de IA) e automatizando a criação/edição via gh CLI ou GitHub API. | [`SKILL.md`](skills/github-project-planner/SKILL.md) |
+| `input-validation-guard` | Use esta skill para blindar fronteiras de dados e contratos em runtime (Zod, Pydantic, DTOs) tanto no Backend/APIs (prevenindo mass assignment e payloads inválidos) quanto no Frontend/Mobile/Backend ao consumir APIs de terceiros sem type casting cego. | [`SKILL.md`](skills/input-validation-guard/SKILL.md) |
 | `integration-testing` | Use esta skill para cobrir fluxos críticos do app (cadastro, autenticação, checkout, webhooks, pagamentos e permissões) com testes de integração realistas (estilo request specs), utilizando banco de teste real e mockando apenas serviços externos. | [`SKILL.md`](skills/integration-testing/SKILL.md) |
 | `payment-idempotency` | Use esta skill para auditar, implementar e garantir idempotência em webhooks e endpoints de pagamento, cobrança, liberação de planos, créditos ou reembolsos (Stripe, Pagar.me, Asaas, Mercado Pago, etc.). | [`SKILL.md`](skills/payment-idempotency/SKILL.md) |
 | `premium-ux-craft` | Use esta skill ao auditar, projetar ou codificar interfaces e fluxos de usuário, garantindo acabamento premium, ergonomia cognitiva, matriz completa de estados (empty, loading, error), teatro do sistema e recuperação graciosa de falhas. | [`SKILL.md`](skills/premium-ux-craft/SKILL.md) |
@@ -91,6 +92,7 @@ skillEletrohits/
 └── skills/
     ├── ai-app-audit/
     ├── github-project-planner/
+    ├── input-validation-guard/
     ├── integration-testing/
     ├── payment-idempotency/
     ├── premium-ux-craft/
