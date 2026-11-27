@@ -1,6 +1,6 @@
-<img width="2048" height="768" alt="image" src="https://github.com/user-attachments/assets/1aa16e57-7003-4204-ae93-9a0d914c210e" />
+<img width="2089" height="281" alt="image" src="https://github.com/user-attachments/assets/915181fb-d041-4d1f-828f-0afed63eb01e" />
 
-# 🪩 skillEletrohits
+# skillEletrohits
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/Skills-9%20Faixas%20%7C%202%20Álbuns-blueviolet.svg)](#-catálogo-por-álbum)
@@ -19,7 +19,7 @@ Coletânea aberta de **Skills** organizada em **Álbuns temáticos** (inspirada 
 
 | Skill | Descrição | Arquivo |
 | :--- | :--- | :--- |
-| 🪩 `ai-app-audit` | Use esta skill para realizar uma auditoria geral panorâmica e 100% somente-leitura (read-only) de toda a aplicação web construída com IA, gerando o relatório AUDITORIA.md com diagnóstico de testes, segurança no cliente, race conditions, idempotência e arquitetura. | [`SKILL.md`](skills/vol-1-core/ai-app-audit/SKILL.md) |
+| `ai-app-audit` | Use esta skill para realizar uma auditoria geral panorâmica e 100% somente-leitura (read-only) de toda a aplicação web construída com IA, gerando o relatório AUDITORIA.md com diagnóstico de testes, segurança no cliente, race conditions, idempotência e arquitetura. | [`SKILL.md`](skills/vol-1-core/ai-app-audit/SKILL.md) |
 | `github-project-planner` | Atua como Tech Lead e Project Manager lean. Estrutura projetos no GitHub analisando issues e milestones existentes, organizando entregas em fatias verticais de alta densidade em português (prontas para humanos ou agentes de IA) e automatizando a criação/edição via gh CLI ou GitHub API. | [`SKILL.md`](skills/vol-1-core/github-project-planner/SKILL.md) |
 | `input-validation-guard` | Use esta skill para blindar fronteiras de dados e contratos em runtime (Zod, Pydantic, DTOs) tanto no Backend/APIs (prevenindo mass assignment e payloads inválidos) quanto no Frontend/Mobile/Backend ao consumir APIs de terceiros sem type casting cego. | [`SKILL.md`](skills/vol-1-core/input-validation-guard/SKILL.md) |
 | `integration-testing` | Use esta skill para cobrir fluxos críticos do app (cadastro, autenticação, checkout, webhooks, pagamentos e permissões) com testes de integração realistas (estilo request specs), utilizando banco de teste real e mockando apenas serviços externos. | [`SKILL.md`](skills/vol-1-core/integration-testing/SKILL.md) |
