@@ -1,16 +1,18 @@
 ﻿<#
 .SYNOPSIS
-    Sincronizador de Skills Multi-IA para Windows (PowerShell).
+    Sincronizador de Skills Multi-IA para Windows (PowerShell) com suporte a Álbuns.
 .DESCRIPTION
     Vincula as skills deste repositório ao Antigravity, Android Studio, IntelliJ IDEA,
     Claude Code, Cursor e Junie sem exigir privilégios de administrador (via Junctions).
 .EXAMPLE
     .\sync.ps1
+    .\sync.ps1 -Album vol-1
     .\sync.ps1 -Project "C:\dev\meu-projeto"
 #>
 
 param (
     [string]$Project = "",
+    [string]$Album = "",
     [switch]$Help
 )
 
@@ -18,18 +20,44 @@ if ($Help) {
     Write-Host "Uso: .\sync.ps1 [OPCOES]"
     Write-Host ""
     Write-Host "Opcoes:"
-    Write-Host "  (sem argumentos)       Sincroniza globalmente no usuario (~/.gemini, ~/.android-studio, ~/.agents, IntelliJ, ~/.junie, ~/.claude, ~/.cursor)"
-    Write-Host "  -Project <PATH>        Sincroniza dentro do diretorio de um projeto especifico (.agents/skills, .android-studio/skills, .junie/skills, .cursor/rules)"
+    Write-Host "  (sem argumentos)       Sincroniza todos os albuns globalmente"
+    Write-Host "  -Album <ALBUM>         Sincroniza apenas um album especifico (ex: vol-1, vol-2)"
+    Write-Host "  -Project <PATH>        Sincroniza dentro do diretorio de um projeto especifico"
     Write-Host "  -Help                  Exibe esta mensagem de ajuda"
     exit 0
 }
 
 $ErrorActionPreference = "Stop"
 $SourceDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$SkillsSource = Join-Path $SourceDir "skills"
+$SkillsRoot = Join-Path $SourceDir "skills"
+
+# Resolver albuns selecionados
+$AlbumDirs = Get-ChildItem -Path $SkillsRoot -Directory | Where-Object {
+    [string]::IsNullOrWhiteSpace($Album) -or ($_.Name -eq $Album) -or ($_.Name -like "$Album-*")
+}
+
+if (-not $AlbumDirs -or $AlbumDirs.Count -eq 0) {
+    Write-Host "Erro: Nenhum album encontrado para o filtro '$Album'." -ForegroundColor Red
+    exit 1
+}
 
 Write-Host "Sincronizando biblioteca de skills..." -ForegroundColor Cyan
-Write-Host "Origem: $SkillsSource"
+Write-Host "Origem: $SkillsRoot"
+if (-not [string]::IsNullOrWhiteSpace($Album)) {
+    Write-Host "Album filtrado: $Album" -ForegroundColor Yellow
+}
+
+function Get-SelectedSkills {
+    $Skills = @()
+    foreach ($AlbumDir in $AlbumDirs) {
+        Get-ChildItem -Path $AlbumDir.FullName -Directory | ForEach-Object {
+            if (Test-Path (Join-Path $_.FullName "SKILL.md")) {
+                $Skills += $_
+            }
+        }
+    }
+    return $Skills
+}
 
 function Link-SkillDirectory {
     param (
@@ -38,9 +66,8 @@ function Link-SkillDirectory {
     if (-not (Test-Path $TargetRoot)) {
         New-Item -ItemType Directory -Force -Path $TargetRoot | Out-Null
     }
-    Get-ChildItem -Path $SkillsSource -Directory | ForEach-Object {
-        $SkillName = $_.Name
-        $Dest = Join-Path $TargetRoot $SkillName
+    foreach ($Skill in (Get-SelectedSkills)) {
+        $Dest = Join-Path $TargetRoot $Skill.Name
         if (Test-Path $Dest) {
             $Item = Get-Item $Dest -Force
             if ($Item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
@@ -50,7 +77,7 @@ function Link-SkillDirectory {
             }
         }
         # Junctions funcionam no Windows sem exigir modo Administrador
-        New-Item -ItemType Junction -Path $Dest -Target $_.FullName | Out-Null
+        New-Item -ItemType Junction -Path $Dest -Target $Skill.FullName | Out-Null
     }
 }
 
@@ -61,10 +88,10 @@ function Link-CursorRules {
     if (-not (Test-Path $TargetRoot)) {
         New-Item -ItemType Directory -Force -Path $TargetRoot | Out-Null
     }
-    Get-ChildItem -Path $SkillsSource -Directory | ForEach-Object {
-        $SkillMd = Join-Path $_.FullName "SKILL.md"
+    foreach ($Skill in (Get-SelectedSkills)) {
+        $SkillMd = Join-Path $Skill.FullName "SKILL.md"
         if (Test-Path $SkillMd) {
-            $Dest = Join-Path $TargetRoot "$($_.Name).mdc"
+            $Dest = Join-Path $TargetRoot "$($Skill.Name).mdc"
             Copy-Item -Path $SkillMd -Destination $Dest -Force
         }
     }
@@ -107,7 +134,6 @@ Write-Host "  [OK] Android Studio Global (~\.android-studio\skills) configurado.
 Link-SkillDirectory (Join-Path $UserHome ".agents\skills")
 Write-Host "  [OK] Agentes Multi-IDE Global (~\.agents\skills) configurado." -ForegroundColor Green
 
-# JetBrains / IntelliJ IDEA Caches no Windows (%LOCALAPPDATA%\JetBrains\*\aia\agents)
 $JetBrainsCache = Join-Path $env:LOCALAPPDATA "JetBrains"
 if (Test-Path $JetBrainsCache) {
     Get-ChildItem -Path $JetBrainsCache -Directory | ForEach-Object {

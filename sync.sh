@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# sync.sh - Sincronizador de Skills Multi-IA
-# Vincula suas skills ao Antigravity, Claude Code, Cursor, IntelliJ (Junie) e outros editores.
+# sync.sh - Sincronizador de Skills Multi-IA (por Álbuns)
+# Vincula suas skills ao Antigravity, Android Studio, IntelliJ, Claude Code, Cursor e Junie.
 # ==============================================================================
 
 set -e
 
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET_PROJECT=""
+ALBUM_FILTER=""
 
 # Parse de argumentos
 while [[ $# -gt 0 ]]; do
@@ -16,12 +17,17 @@ while [[ $# -gt 0 ]]; do
       TARGET_PROJECT="$2"
       shift 2
       ;;
+    --album|-a)
+      ALBUM_FILTER="$2"
+      shift 2
+      ;;
     --help|-h)
       echo "Uso: ./sync.sh [OPÇÕES]"
       echo ""
       echo "Opções:"
-      echo "  (sem argumentos)      Sincroniza globalmente no usuário (~/.gemini, ~/.android-studio, ~/.agents, IntelliJ, ~/.junie, ~/.claude, ~/.cursor)"
-      echo "  --project, -p <PATH>  Sincroniza dentro do diretório de um projeto específico (.agents/skills, .android-studio/skills, .junie/skills, .cursor/rules)"
+      echo "  (sem argumentos)      Sincroniza todos os álbuns globalmente (~/.gemini, ~/.android-studio, ~/.agents, IntelliJ, ~/.junie, ~/.claude, ~/.cursor)"
+      echo "  --album, -a <ALBUM>   Sincroniza apenas um álbum específico (ex: vol-1, vol-2, vol-1-core)"
+      echo "  --project, -p <PATH>  Sincroniza dentro de um projeto específico (.agents/skills, .android-studio/skills, .junie/skills, .cursor/rules)"
       echo "  --help, -h            Exibe esta mensagem de ajuda"
       exit 0
       ;;
@@ -32,10 +38,29 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# Resolver álbuns selecionados
+shopt -s nullglob
+ALBUM_DIRS=()
+for album_path in "$SOURCE_DIR"/skills/*/; do
+  album_name=$(basename "$album_path")
+  if [ -z "$ALBUM_FILTER" ] || [ "$album_name" = "$ALBUM_FILTER" ] || [[ "$album_name" == "$ALBUM_FILTER"-* ]]; then
+    ALBUM_DIRS+=("$album_path")
+  fi
+done
+shopt -u nullglob
+
+if [ ${#ALBUM_DIRS[@]} -eq 0 ]; then
+  echo "❌ Erro: Nenhum álbum encontrado para o filtro '$ALBUM_FILTER'."
+  exit 1
+fi
+
 echo "🔗 Sincronizando biblioteca de skills..."
 echo "📂 Origem: $SOURCE_DIR/skills"
+if [ -n "$ALBUM_FILTER" ]; then
+  echo "💿 Álbum filtrado: $ALBUM_FILTER"
+fi
 
-# Função para limpar symlinks mortos/órfãos
+# Limpa symlinks mortos/órfãos
 cleanup_broken_symlinks() {
   local target_dir="$1"
   if [ -d "$target_dir" ]; then
@@ -45,6 +70,40 @@ cleanup_broken_symlinks() {
       fi
     done
   fi
+}
+
+# Cria symlinks planos das skills dos álbuns selecionados em um diretório alvo
+sync_skills_to() {
+  local target_dir="$1"
+  mkdir -p "$target_dir"
+  shopt -s nullglob
+  for album_dir in "${ALBUM_DIRS[@]}"; do
+    for skill_dir in "$album_dir"*/; do
+      if [ -f "$skill_dir/SKILL.md" ]; then
+        skill_name=$(basename "$skill_dir")
+        ln -sfn "$skill_dir" "$target_dir/$skill_name"
+      fi
+    done
+  done
+  shopt -u nullglob
+  cleanup_broken_symlinks "$target_dir"
+}
+
+# Cria symlinks .mdc para Cursor
+sync_cursor_to() {
+  local target_dir="$1"
+  mkdir -p "$target_dir"
+  shopt -s nullglob
+  for album_dir in "${ALBUM_DIRS[@]}"; do
+    for skill_dir in "$album_dir"*/; do
+      if [ -f "$skill_dir/SKILL.md" ]; then
+        skill_name=$(basename "$skill_dir")
+        ln -sfn "$skill_dir/SKILL.md" "$target_dir/$skill_name.mdc"
+      fi
+    done
+  done
+  shopt -u nullglob
+  cleanup_broken_symlinks "$target_dir"
 }
 
 # ------------------------------------------------------------------------------
@@ -58,46 +117,16 @@ if [ -n "$TARGET_PROJECT" ]; then
 
   echo "🎯 Configurando para o projeto: $TARGET_PROJECT"
 
-  # Antigravity, IntelliJ & Android Studio Workspace (.agents/skills)
-  AGY_WS="$TARGET_PROJECT/.agents/skills"
-  mkdir -p "$AGY_WS"
-  for skill_dir in "$SOURCE_DIR"/skills/*/; do
-    skill_name=$(basename "$skill_dir")
-    ln -sfn "$skill_dir" "$AGY_WS/$skill_name"
-  done
-  cleanup_broken_symlinks "$AGY_WS"
+  sync_skills_to "$TARGET_PROJECT/.agents/skills"
   echo "  ✔ Workspace (.agents/skills/) configurado."
 
-  # Android Studio Workspace (.android-studio/skills)
-  AS_WS="$TARGET_PROJECT/.android-studio/skills"
-  mkdir -p "$AS_WS"
-  for skill_dir in "$SOURCE_DIR"/skills/*/; do
-    skill_name=$(basename "$skill_dir")
-    ln -sfn "$skill_dir" "$AS_WS/$skill_name"
-  done
-  cleanup_broken_symlinks "$AS_WS"
+  sync_skills_to "$TARGET_PROJECT/.android-studio/skills"
   echo "  ✔ Android Studio Workspace (.android-studio/skills/) configurado."
 
-  # IntelliJ / JetBrains Junie Workspace (.junie/skills)
-  INTELLIJ_WS="$TARGET_PROJECT/.junie/skills"
-  mkdir -p "$INTELLIJ_WS"
-  for skill_dir in "$SOURCE_DIR"/skills/*/; do
-    skill_name=$(basename "$skill_dir")
-    ln -sfn "$skill_dir" "$INTELLIJ_WS/$skill_name"
-  done
-  cleanup_broken_symlinks "$INTELLIJ_WS"
+  sync_skills_to "$TARGET_PROJECT/.junie/skills"
   echo "  ✔ IntelliJ / JetBrains (.junie/skills/) configurado."
 
-  # Cursor Workspace (.cursor/rules)
-  CURSOR_WS="$TARGET_PROJECT/.cursor/rules"
-  mkdir -p "$CURSOR_WS"
-  for skill_dir in "$SOURCE_DIR"/skills/*/; do
-    skill_name=$(basename "$skill_dir")
-    if [ -f "$skill_dir/SKILL.md" ]; then
-      ln -sfn "$skill_dir/SKILL.md" "$CURSOR_WS/$skill_name.mdc"
-    fi
-  done
-  cleanup_broken_symlinks "$CURSOR_WS"
+  sync_cursor_to "$TARGET_PROJECT/.cursor/rules"
   echo "  ✔ Cursor (.cursor/rules/) configurado."
 
   echo "🎉 Concluído com sucesso no projeto!"
@@ -108,38 +137,19 @@ fi
 # 2. Modo Global (na máquina do desenvolvedor)
 # ------------------------------------------------------------------------------
 
-# Antigravity Global (~/.gemini/config/skills/)
 AGY_GLOBAL="$HOME/.gemini/config/skills"
-mkdir -p "$AGY_GLOBAL"
-for skill_dir in "$SOURCE_DIR"/skills/*/; do
-  skill_name=$(basename "$skill_dir")
-  ln -sfn "$skill_dir" "$AGY_GLOBAL/$skill_name"
-done
-cleanup_broken_symlinks "$AGY_GLOBAL"
+sync_skills_to "$AGY_GLOBAL"
 echo "  ✔ Antigravity Global ($AGY_GLOBAL) configurado."
 
-# Android Studio Global (~/.android-studio/skills/)
 ANDROID_STUDIO_GLOBAL="$HOME/.android-studio/skills"
-mkdir -p "$ANDROID_STUDIO_GLOBAL"
-for skill_dir in "$SOURCE_DIR"/skills/*/; do
-  skill_name=$(basename "$skill_dir")
-  ln -sfn "$skill_dir" "$ANDROID_STUDIO_GLOBAL/$skill_name"
-done
-cleanup_broken_symlinks "$ANDROID_STUDIO_GLOBAL"
+sync_skills_to "$ANDROID_STUDIO_GLOBAL"
 echo "  ✔ Android Studio Global ($ANDROID_STUDIO_GLOBAL) configurado."
 
-# Padrão Global .agents (~/.agents/skills/)
 AGENTS_GLOBAL="$HOME/.agents/skills"
-mkdir -p "$AGENTS_GLOBAL"
-for skill_dir in "$SOURCE_DIR"/skills/*/; do
-  skill_name=$(basename "$skill_dir")
-  ln -sfn "$skill_dir" "$AGENTS_GLOBAL/$skill_name"
-done
-cleanup_broken_symlinks "$AGENTS_GLOBAL"
+sync_skills_to "$AGENTS_GLOBAL"
 echo "  ✔ Agentes Multi-IDE Global ($AGENTS_GLOBAL) configurado."
 
 # IntelliJ IDEA / JetBrains (Extensão Oficial Antigravity & AI Assistant)
-# Escaneia diretórios de cache do JetBrains no macOS e Linux
 shopt -s nullglob
 JB_DIRS=(
   "$HOME/Library/Caches/JetBrains"/*/aia/agents
@@ -147,64 +157,25 @@ JB_DIRS=(
 )
 shopt -u nullglob
 
-jb_configured=0
 for jb_agents in "${JB_DIRS[@]}"; do
   if [ -d "$jb_agents" ]; then
     ide_label=$(basename "$(dirname "$(dirname "$jb_agents")")")
-    
-    # 1. Managed Skills Root (Settings -> Tools -> AI Assistant -> Skills)
-    JB_MANAGED="$jb_agents/.agents/skills"
-    mkdir -p "$JB_MANAGED"
-    for skill_dir in "$SOURCE_DIR"/skills/*/; do
-      skill_name=$(basename "$skill_dir")
-      ln -sfn "$skill_dir" "$JB_MANAGED/$skill_name"
-    done
-    cleanup_broken_symlinks "$JB_MANAGED"
-
-    # 2. Views / Other Root (Injetado pelo IntelliJ no Antigravity ACP)
-    JB_VIEWS="$jb_agents/views/other/.agents/skills"
-    mkdir -p "$JB_VIEWS"
-    for skill_dir in "$SOURCE_DIR"/skills/*/; do
-      skill_name=$(basename "$skill_dir")
-      ln -sfn "$skill_dir" "$JB_VIEWS/$skill_name"
-    done
-    cleanup_broken_symlinks "$JB_VIEWS"
-
+    sync_skills_to "$jb_agents/.agents/skills"
+    sync_skills_to "$jb_agents/views/other/.agents/skills"
     echo "  ✔ IntelliJ IDEA / JetBrains ($ide_label) configurado."
-    jb_configured=1
   fi
 done
 
-# IntelliJ / JetBrains Junie Global (~/.junie/skills/)
 INTELLIJ_GLOBAL="$HOME/.junie/skills"
-mkdir -p "$INTELLIJ_GLOBAL"
-for skill_dir in "$SOURCE_DIR"/skills/*/; do
-  skill_name=$(basename "$skill_dir")
-  ln -sfn "$skill_dir" "$INTELLIJ_GLOBAL/$skill_name"
-done
-cleanup_broken_symlinks "$INTELLIJ_GLOBAL"
+sync_skills_to "$INTELLIJ_GLOBAL"
 echo "  ✔ IntelliJ / JetBrains Junie ($INTELLIJ_GLOBAL) configurado."
 
-# Claude Code Global (~/.claude/skills/)
 CLAUDE_GLOBAL="$HOME/.claude/skills"
-mkdir -p "$CLAUDE_GLOBAL"
-for skill_dir in "$SOURCE_DIR"/skills/*/; do
-  skill_name=$(basename "$skill_dir")
-  ln -sfn "$skill_dir" "$CLAUDE_GLOBAL/$skill_name"
-done
-cleanup_broken_symlinks "$CLAUDE_GLOBAL"
+sync_skills_to "$CLAUDE_GLOBAL"
 echo "  ✔ Claude Code ($CLAUDE_GLOBAL) configurado."
 
-# Cursor Global (~/.cursor/rules/)
 CURSOR_GLOBAL="$HOME/.cursor/rules"
-mkdir -p "$CURSOR_GLOBAL"
-for skill_dir in "$SOURCE_DIR"/skills/*/; do
-  skill_name=$(basename "$skill_dir")
-  if [ -f "$skill_dir/SKILL.md" ]; then
-    ln -sfn "$skill_dir/SKILL.md" "$CURSOR_GLOBAL/$skill_name.mdc"
-  fi
-done
-cleanup_broken_symlinks "$CURSOR_GLOBAL"
+sync_cursor_to "$CURSOR_GLOBAL"
 echo "  ✔ Cursor Global ($CURSOR_GLOBAL) configurado."
 
 # ------------------------------------------------------------------------------
